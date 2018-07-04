@@ -1,41 +1,85 @@
+/*
+ * 
+ */
 package com.wipro.piramal.service;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+import com.wipro.piramal.exceptions.ErrorResponse;
+import com.wipro.piramal.util.BulkConstant;
+import com.wipro.piramal.util.MapperConstant;
+import com.wipro.piramal.validator.BulkValidator;
+import com.wipro.piramal.vo.CandidateBypassVo;
+import com.wipro.piramal.vo.CandidateVo;
+import com.wipro.piramal.vo.OfferVo;
+import com.wipro.piramal.vo.ReqCandidateVo;
 import com.wipro.piramal.vo.RequistionVo;
+import com.wipro.piramal.vo.ShlVo;
 
+import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
+import au.com.bytecode.opencsv.bean.CsvToBean;
 
+/**
+ * @author Praveen $oni
+ */
 @Service
 public class BulkService {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BulkService.class);
-	private static final String CANDIDATE = "classpath:templates/TechGig.txt";
-	private static final String REQUISTION = "classpath:templates/TechGig.txt";
-	private static final String OFFERS = "classpath:templates/TechGig.txt";
+	@Value("${outPut.path}")
+	private String outPutPath;
 
+	@Value("${download.path.candidate}")
+	private String candidateOutputPath;
+
+	/** The validator. */
+	@Autowired
+	private BulkValidator validator;
+
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = LoggerFactory.getLogger(BulkService.class);
+
+	/**
+	 * Download templates.
+	 *
+	 * @param fileName
+	 *            the file name
+	 * @param response
+	 *            the response
+	 */
 	public void downloadTemplates(String fileName, HttpServletResponse response) {
 		String tempalteName = getTemplateName(fileName);
 		File file = null;
 		try {
-
 			file = ResourceUtils.getFile(tempalteName);
 			InputStream inputStream = new FileInputStream(file);
 			response.setContentType("application/csv");
-			response.setHeader("Content-Disposition", "filename=TechGig.txt");
-			IOUtils.copy(inputStream, response.getOutputStream());
+			response.setHeader("Content-Disposition", "filename=" + file.getName());
+			ServletOutputStream outputStream2 = response.getOutputStream();
+
+			IOUtils.copy(inputStream, outputStream2);
+			String finalString = new String(outputStream2.toString());
+
+			System.out.println(finalString);
+
 		} catch (FileNotFoundException exp) {
 			LOGGER.error(" BulkService.downloadTemplates() :" + exp.getMessage());
 			exp.printStackTrace();
@@ -46,73 +90,241 @@ public class BulkService {
 
 	}
 
+	/**
+	 * Gets the template name.
+	 *
+	 * @param name
+	 *            the name
+	 * @return the template name
+	 */
 	public static String getTemplateName(String name) {
 		String templateName = "";
 		switch (name) {
 		case "CANDIDATE":
-			templateName = CANDIDATE;
+			templateName = BulkConstant.CANDIDATE_TEMPLATE;
 			break;
 		case "REQUISTION":
-			templateName = REQUISTION;
+			templateName = BulkConstant.REQUISTION_TEMPLATE;
 			break;
 		case "OFFERS":
-			templateName = OFFERS;
+			templateName = BulkConstant.OFFERS_TEMPLATE;
 			break;
+		case "CAND_BYPASS":
+			templateName = BulkConstant.CANDIDATE_BYPASS_TEMPLATE;
+			break;
+		case "REQ_CAND":
+			templateName = BulkConstant.REQUISTION_CANDIDATE_TEMPLATE;
+			break;
+		case "SHL":
+			templateName = BulkConstant.SHL_TEMPLATE;
 
 		}
 		return templateName;
 
 	}
 
-	public ColumnPositionMappingStrategy setColumMapping() {
+	/**
+	 * Sets the colum mapping.
+	 *
+	 * @param mappedClass
+	 *            the mapped class
+	 * @param mappedColumns
+	 *            the mapped columns
+	 * @return the column position mapping strategy
+	 */
+	@SuppressWarnings("rawtypes")
+	public static ColumnPositionMappingStrategy setColumMapping(Class mappedClass, String[] mappedColumns) {
 		ColumnPositionMappingStrategy strategy = new ColumnPositionMappingStrategy();
-		strategy.setType(RequistionVo.class);
-	
-		String[] columns = new String[] { "identifier", "reqType", "positionCode", "justification", "budgetedPosition",
-				"eeoJob", "contractType", "aaoJob", "worktype", "recruiter", "hiringMgr", "shift", "education",
-				"experience", "currency", "payBasis", "minSalary", "maxSalary", "descExternal", "qualExternal",
-				"desInternal", "qualInternal", "status" };
-		strategy.setColumnMapping(columns);
+		strategy.setType(mappedClass);
+		strategy.setColumnMapping(mappedColumns);
 		return strategy;
 	}
 
-	/*
-	 * public ErrorResponse mapToVo(String[] split) {
-	 * 
-	 * ErrorResponse mapToRequistion = mapToRequistion(split);
-	 * 
-	 * return mapToRequistion; }
-	 * 
-	 * 
-	 * static ErrorResponse mapToRequistion(String[] split){
-	 * 
-	 * ErrorResponse resp = new ErrorResponse(); RequistionVo req = new
-	 * RequistionVo(); long value = Long.parseLong(split[0]); try {
-	 * 
-	 * System.out.println("id" + value); req.setIdentifier(value);
-	 * req.setReqType(split[1]); value = Long.parseLong(split[2]);
-	 * req.setPositionCode(value); req.setJustification(split[3]);
-	 * req.setBudgetedPosition(split[4]); req.setEeoJob(split[5]);
-	 * req.setContractType(split[6]); req.setAaoJob(split[7]);
-	 * req.setWorktype(split[8]); value = Long.parseLong(split[9]);
-	 * req.setRecruiter(value); value = Long.parseLong(split[10]);
-	 * req.setHiringMgr(value); req.setShift(split[11]);
-	 * req.setEducation(split[12]); req.setExperience(split[13]);
-	 * req.setCurrency(split[14]); req.setPayBasis(split[15]); value =
-	 * Long.parseLong(split[16]); req.setMinSalary(value); value =
-	 * Long.parseLong(split[17]); req.setMaxSalary(value);
-	 * req.setDescExternal(split[18]); req.setQualExternal(split[19]);
-	 * req.setDesInternal(split[20]); req.setQualInternal(split[21]);
-	 * req.setStatus(split[22]);
-	 * 
-	 * } catch (NumberFormatException exp) { String message = exp.getMessage();
-	 * resp.setErrorId(String.valueOf(value)); resp.setErrorMsg(message +
-	 * " Numeric value is expected"); } catch (ArrayIndexOutOfBoundsException
-	 * exp) {
-	 * 
-	 * } catch (Exception exp) {
-	 * 
-	 * } return resp; }
+	/**
+	 * Process data.
+	 *
+	 * @param reader
+	 *            the reader
+	 * @param fileType
+	 *            the file type
+	 * @return the list
 	 */
+	@SuppressWarnings("unchecked")
+	public List<ErrorResponse> processData(CSVReader reader, String fileType) {
 
+		List list = null;
+		List<ErrorResponse> validate = null;
+		CsvToBean csv = new CsvToBean();
+		switch (fileType) {
+		case "R":
+
+			list = csv.parse(setColumMapping(MapperConstant.REQUSITION_CLASS, MapperConstant.REQUISTION_COLUMNS),
+					reader);
+			break;
+		case "O":
+			list = csv.parse(setColumMapping(MapperConstant.OFFERS_CLASS, MapperConstant.OFFERS_COLUMNS), reader);
+			break;
+		case "RC":
+			list = csv.parse(setColumMapping(MapperConstant.REQ_CAND_CLASS, MapperConstant.REQ_CAND_MAPPING_COLUMNS),
+					reader);
+			break;
+		case "S":
+			list = csv.parse(setColumMapping(MapperConstant.SHL_CLASS, MapperConstant.SHL_COLUMNS), reader);
+			break;
+		case "CC":
+			list = csv.parse(setColumMapping(MapperConstant.CANDIDATE_CLASS, MapperConstant.CANDIDATE_COLUMNS), reader);
+			break;
+		case "CB":
+			list = csv.parse(setColumMapping(MapperConstant.CAND_BYPASS, MapperConstant.CANDIDATE_BYPASS_COLUMNS),
+					reader);
+			break;
+		case "CEXP":
+			list = csv.parse(setColumMapping(MapperConstant.CAND_EXP_CLASS, MapperConstant.CANDIDATE_EXP_COLUMNS),
+					reader);
+			break;
+		case "CEDU":
+			list = csv.parse(setColumMapping(MapperConstant.CAND_EDU_CLASS, MapperConstant.CANDIDATE_EDU_COLUMNS),
+					reader);
+			break;
+
+		}
+		/*
+		 * if ("R".equalsIgnoreCase(fileType)) {
+		 * 
+		 * } else if ("C".equalsIgnoreCase(fileType)) { CsvToBean<CandidateVo>
+		 * csv = new CsvToBean<CandidateVo>(); list =
+		 * csv.parse(setColumMapping(MapperConstant.CANDIDATE_CLASS,
+		 * MapperConstant.CANDIDATE_COLUMNS), reader); } else if
+		 * ("O".equalsIgnoreCase(fileType)) { CsvToBean<OfferVo> csv = new
+		 * CsvToBean<OfferVo>();
+		 * 
+		 * 
+		 * } else if ("RC".equalsIgnoreCase(fileType)) {
+		 * CsvToBean<ReqCandidateVo> csv = new CsvToBean<ReqCandidateVo>();
+		 * 
+		 * 
+		 * } else if ("CB".equalsIgnoreCase(fileType)) {
+		 * CsvToBean<CandidateBypassVo> csv = new
+		 * CsvToBean<CandidateBypassVo>();
+		 * 
+		 * 
+		 * } else if ("S".equalsIgnoreCase(fileType)) { CsvToBean<ShlVo> csv =
+		 * new CsvToBean<ShlVo>();
+		 * 
+		 * 
+		 * }
+		 */
+
+		System.out.println("list: " + list);
+		if (list.size() != 0) {
+			validate = validator.validate(list);
+		}
+
+		return validate;
+	}
+
+	public File moveFileToServer(String fileType, InputStreamReader in) {
+		File file = null;
+		try {
+			String fileName = getOutPutFileName(fileType);
+			System.out.println("outPutPath " + outPutPath);
+			file = new File(outPutPath + "\\" + fileName);
+			FileOutputStream out = new FileOutputStream(file);
+			IOUtils.copy(in, out);
+			in.close();
+			out.close();
+			System.out.println(" >> > done");
+		} catch (FileNotFoundException exp) {
+			exp.printStackTrace();
+		} catch (IOException exp) {
+			exp.printStackTrace();
+		}
+
+		return file;
+
+	}
+
+	private String getOutPutFileName(String fileType) {
+		String fileName = "";
+		switch (fileType) {
+		case "R":
+			fileName = BulkConstant.REQ_OP_FILE;
+			break;
+		case "C":
+			fileName = BulkConstant.CAND_OP_FILE;
+			break;
+		case "O":
+			fileName = BulkConstant.OFFERS_OP_FILE;
+			break;
+		case "RC":
+			fileName = BulkConstant.REQ_CAND_OP_FILE;
+			break;
+		case "CB":
+			fileName = BulkConstant.CAND_BYPASS_OP_FILE;
+			break;
+		case "S":
+			fileName = BulkConstant.SHL_OP_FILE;
+
+		}
+		return fileName;
+	}
+
+	public boolean sendMail(File file, HttpServletResponse response) {
+
+		InputStream inputStream = null;
+		try {
+			if (file.exists()) {
+
+				file = ResourceUtils.getFile(file.getAbsolutePath());
+				inputStream = new FileInputStream(file);
+				response.setContentType("application/csv");
+				response.setHeader("Content-Disposition", "filename=" + file.getName());
+				IOUtils.copy(inputStream, response.getOutputStream());
+				return true;
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public void downloadOutputFile(String fileName, HttpServletResponse response) {
+		InputStream inputStream = null;
+		System.out.println("candidateOutputPath :  >> > >>  " + candidateOutputPath);
+		boolean fileAvail = false;
+		try {
+			File file = new File(fileName);
+			if (!file.exists()) {
+
+				file.mkdirs();
+			}
+			File[] fileslist = file.listFiles();
+			for (File files : fileslist) {
+				if (files.isFile()) {
+					fileAvail = true;
+					System.out.println(" fileName.getAbsolutePath(): " + files.getAbsolutePath());
+					inputStream = new FileInputStream(files.getAbsolutePath());
+					response.setContentType("application/csv");
+					response.setHeader("Content-Disposition", "filename= " + files.getName());
+					ServletOutputStream outputStream = response.getOutputStream();
+					IOUtils.copy(inputStream, outputStream);
+					outputStream.flush();
+					outputStream.close();
+				}
+
+			}
+			if (!fileAvail) {
+				response.sendRedirect("/bulk/download/emptyDir");
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 }

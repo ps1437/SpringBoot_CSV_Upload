@@ -1,4 +1,4 @@
-package com.wipro.piramal.helper;
+package com.wipro.piramal.validator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,12 +13,24 @@ import javax.validation.ValidatorFactory;
 
 import org.springframework.stereotype.Service;
 
+import com.wipro.piramal.exceptions.ErrorResponse;
+
+/**
+ * @author Praveen $oni
+ */
 @Service
 public class BulkValidator {
 
-	List<ErrorResponse> errorList = new ArrayList<ErrorResponse>();
-
+	/**
+	 * Validate.
+	 *
+	 * @param list
+	 *            the list
+	 * @return the list
+	 */
 	public List<ErrorResponse> validate(List list) {
+
+		List<ErrorResponse> errorList = new ArrayList<ErrorResponse>();
 
 		Validator validator = configValidator();
 
@@ -26,23 +38,22 @@ public class BulkValidator {
 
 		while (iterator.hasNext()) {
 
-		
 			Set<ConstraintViolation<Object>> violations = validator.validate(iterator.next());
-
 			Iterator<ConstraintViolation<Object>> validateResult = violations.iterator();
 			while (validateResult.hasNext()) {
 				ConstraintViolation next = validateResult.next();
-				// violations.forEach(v ->
-				// System.out.println(v.getInvalidValue() + "-$$$$$$- " +
-				// v.getMessage());
 				errorList.add(new ErrorResponse(next.getInvalidValue().toString(), next.getMessage()));
-
 			}
 		}
 		return errorList;
 
 	}
 
+	/**
+	 * Config validator.
+	 *
+	 * @return the validator
+	 */
 	static Validator configValidator() {
 		Configuration<?> config = Validation.byDefaultProvider().configure();
 		ValidatorFactory factory = config.buildValidatorFactory();

@@ -1,48 +1,68 @@
 package com.wipro.piramal.validator;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.wipro.piramal.helper.ErrorResponse;
+import com.wipro.piramal.exceptions.ErrorResponse;
 
-public class InputValidator implements ConstraintValidator<InputValid, String> {
+/**
+ * @author Praveen $oni
+ *
+ */
+public class InputValidator implements ConstraintValidator<ValidInput, String> {
 
-	private Set<String> validDays;
+	/** The expected values. */
+	private String expectedValues;
 
-	public boolean isValid(LocalDate localDate, ConstraintValidatorContext context) {
-		return localDate != null && validDays.contains(localDate.getDayOfWeek());
-	}
+	private boolean nullable;
 
 	@Override
-	public void initialize(InputValid arg0) {
-		validDays = Arrays.stream(arg0.days()).collect(Collectors.toSet());
-
+	public void initialize(ValidInput input) {
+		expectedValues = input.expectedValue();
+		nullable = input.nullable();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.validation.ConstraintValidator#isValid(java.lang.Object,
+	 * javax.validation.ConstraintValidatorContext)
+	 */
 	@Override
 	public boolean isValid(String input, ConstraintValidatorContext arg1) {
+		System.out.println("  input  : " + input);
 
-		System.out.println(" arg0 >> " + input);
-
-		if (!validDays.contains(input))
+		if (!nullable) {
+			for (String value : expectedValues.split(",")) {
+				System.out.println(">>> value <<<<" + value);
+				if (input.equals(value)) {
+					return true;
+				}
+			}
 			return false;
+		}
 		return true;
 	}
 
+	/** The error resp. */
 	List<ErrorResponse> errorResp = new ArrayList<ErrorResponse>();
 
+	/**
+	 * Gets the error des.
+	 *
+	 * @param input
+	 *            the input
+	 * @param validDays
+	 *            the valid days
+	 * @return the error des
+	 */
 	public List<ErrorResponse> getErrorDes(String input, Set<String> validDays) {
 		ErrorResponse res = new ErrorResponse();
 		res.setErrorId(input);
 		res.setErrorMsg(validDays.toString());
-
 		errorResp.add(res);
 		return errorResp;
 
