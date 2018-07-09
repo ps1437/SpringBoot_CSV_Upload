@@ -1,8 +1,9 @@
 package com.wipro.piramal.vo;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Email;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.NumberFormat;
 import org.springframework.stereotype.Component;
 
 import com.wipro.piramal.validator.NotNullNumberFormat;
@@ -13,35 +14,36 @@ import com.wipro.piramal.validator.NotNullNumberFormat;
 @Component
 public class CandidateVo {
 
-	@NumberFormat
+	@NotNullNumberFormat(nullable = true)
 	private long identifier;
 	private String firstName;
 	private String lastName;
 	private String address;
 	private String city;
-	@NumberFormat
+	@NotNullNumberFormat(nullable = true)
 	private long zip;
 	private String residence;
 
 	private String primaryNumber;
-	@NumberFormat
+	@NotNullNumberFormat(nullable = true)
 	private long cellularNumber;
 	
 	@NotNullNumberFormat
 	private long homeNumber;
 	@Email(message = "Please enter proper email id")
 	private String email;
-	@NumberFormat
+	@NotNullNumberFormat(nullable = true)
 	private long noticePeriod;
+	@NotNull
 	@DateTimeFormat(pattern ="yyyy-MM-dd")
 	private String dob;
 	@DateTimeFormat(pattern ="yyyy-MM-dd")
 	private String doa;
-	@NumberFormat
+	@NotNullNumberFormat(nullable = true)
 	private long rehire;
-	@NumberFormat
+	@NotNullNumberFormat(nullable = true)
 	private long salary;
-	@NumberFormat
+	@NotNullNumberFormat(nullable = true)
 	private long sal;
 
 	public long getIdentifier() {

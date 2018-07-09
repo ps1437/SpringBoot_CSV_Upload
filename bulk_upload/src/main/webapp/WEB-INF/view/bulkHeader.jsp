@@ -1,3 +1,13 @@
+<style>
+.dropbtn1 {
+	background-color: #0C3453;
+	color: white;
+	padding: 16px;
+	font-size: 16px;
+	border: none;
+}
+</style>
+
 <div class="row">
 	<div class="jumbotron" id="bar1">
 		<div class='col-sm-4'>
@@ -10,11 +20,19 @@
 				Upload&nbsp;&nbsp;&nbsp;&nbsp;</h2>
 		</div>
 		<div class='col-sm-3'>
-			<br> <br> <span
-				class='glyphicon glyphicon-download-alt menu'
-				style="color: white; float: right; font-weight: bold; font-size: 16px">
-				<a href="/bulk/downloadFile" style="color: white">&nbsp;Download</a>
-			</span>
+			<br>
+
+			<div class="dropdown1">
+				<button class="dropbtn1 ">
+					Download Output&nbsp;<b class='glyphicon glyphicon-download-alt'></b>
+				</button>
+				<div class="dropdown1-list">
+					<a href="#">Requisition Output</a> 
+					<a href="#">Candidate Output</a>
+					<a href="#">Offer Output</a>
+				</div>
+			</div>
+
 
 		</div>
 

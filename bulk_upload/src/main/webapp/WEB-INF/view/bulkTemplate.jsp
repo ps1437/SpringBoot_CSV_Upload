@@ -1,57 +1,33 @@
-<div class="row">
+<div class="row" style="padding-left: 2px; padding-right: 2px">
 	<ul class="list-group">
 		<li class="list-group-item">
 			<div>
 				<h4>Download Templates</h4>
 				<hr>
-			</div>
-			<div>
-				<span> <a class="btn btn-primary  btn-width-custome"
-					href="/bulk/download/REQUISTION">Requistion </a>
-				</span>
-				<span> <a class="btn btn-primary  btn-width-custome"
-					href="/bulk/download/REQUISTION">Requistion </a>
-				</span>
-				
-			</div>
-		</li>
-		<li class="list-group-item">
-			<div>
-				<span> <a class="btn btn-primary btn-width-custome"
-					href="/bulk/download/CANDIDATE">Candidate </a>
-				</span>
-
-			</div>
-		</li>
-		<li class="list-group-item">
-			<div>
-				<span> <a class="btn btn-primary btn-width-custome"
-					href="/bulk/download/OFFERS">Offers </a>
-				</span>
-
-
-			</div>
-		</li>
-		<li class="list-group-item">
-		
-				<a class="btn btn-primary btn-width-custome"
-					href="/bulk/download/CAND_BYPASS">Candidate Bypass </a>
-				
+			</div> <span> <a class="btn btn-primary  template-Button"
+				href="/bulk/download/REQUISTION">Requistion </a>
+		</span> <span> <a class="btn btn-primary  template-Button"
+				href="/bulk/download/CANDIDATE">Candidate </a>
+		</span>
 
 		</li>
-		<li class="list-group-item">
-		
-				<a class="btn btn-primary btn-width-custome"
-					href="/bulk/download/REQ_CAND">Requistion Candidate Mapping </a>
-				
+		<li class="list-group-item"><span> <a
+				class="btn btn-primary template-Button"
+				href="/bulk/download/CANDIDATE_EXP">Candidate Experience&nbsp; </a>
+		</span> <span> <a class="btn btn-primary template-Button"
+				href="/bulk/download/CANDIDATE_EDU">Candidate Education </a>
+		</span></li>
+		<li class="list-group-item"><span><a
+				class="btn btn-primary template-Button"
+				href="/bulk/download/CAND_BYPASS">Candidate Bypass </a> </span> <span>
 
-		</li>
-		<li class="list-group-item">
-		
-				<a class="btn btn-primary btn-width-custome"
-					href="/bulk/download/SHL">SHL </a>
-				
+				<a class="btn btn-primary template-Button"
+				href="/bulk/download/REQ_CAND">Requistion Candidate </a>
 
-		</li>
+		</span></li>
+		<li class="list-group-item"><span> <a
+				class="btn btn-primary template-Button" href="/bulk/download/OFFERS">Offers
+			</a></span> <span> <a class="btn btn-primary template-Button"
+				href="/bulk/download/SHL">SHL </a></span></li>
 	</ul>
 </div>

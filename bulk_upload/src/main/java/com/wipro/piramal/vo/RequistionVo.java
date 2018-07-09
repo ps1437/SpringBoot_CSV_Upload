@@ -6,6 +6,7 @@ import org.springframework.format.annotation.NumberFormat;
 import org.springframework.stereotype.Component;
 
 import com.wipro.piramal.util.BulkConstant;
+import com.wipro.piramal.validator.NotNullNumberFormat;
 import com.wipro.piramal.validator.ValidInput;
 
 /**
@@ -15,15 +16,16 @@ import com.wipro.piramal.validator.ValidInput;
 public class RequistionVo {
 
 	/** The identifier. */
+	@NotNullNumberFormat(nullable = true)
 	private long identifier;
 
 	/** The req type. */
-	@ValidInput(expectedValue = BulkConstant.VALID_REQ_TYPE, message = "{requ.reqType}")
+	@ValidInput(expectedValue = BulkConstant.VALID_REQ_TYPE, message = "{requ.reqType}", nullable = true)
 	private String reqType;
 
 	/** The position code. */
-	@NumberFormat
-	private long positionCode;
+	@NotNull
+	private String positionCode;
 
 	/** The justification. */
 	@NotNull
@@ -36,7 +38,7 @@ public class RequistionVo {
 	private String budgetedPosition;
 
 	/** The eeo job. */
-	@ValidInput(expectedValue = "Professionals", message = "{requ.eeo}")
+	@ValidInput(expectedValue = "Professionals", message = "{requ.eeo}", nullable = true)
 	private String eeoJob;
 
 	/** The contract type. */
@@ -45,6 +47,7 @@ public class RequistionVo {
 	private String contractType;
 
 	/** The aao job. */
+	@ValidInput(expectedValue = BulkConstant.VALID_AAP_JOB_GROUP, message = "{requ.aap.group}", nullable = true)
 	private String aaoJob;
 
 	/** The worktype. */
@@ -63,23 +66,23 @@ public class RequistionVo {
 	private long hiringMgr;
 
 	/** The shift. */
-	@NotNull
-	@ValidInput(expectedValue = BulkConstant.VALID_SHIFT, message = "{requ.shift}")
+	// @NotNull
+	@ValidInput(expectedValue = BulkConstant.VALID_SHIFT, message = "{requ.shift}", nullable = true)
 	private String shift;
 
 	/** The education. */
-	@NotNull
-	@ValidInput(expectedValue = BulkConstant.VALID_EDUCATION, message = "{requ.education}")
+	// @NotNull
+	@ValidInput(expectedValue = BulkConstant.VALID_EDUCATION, message = "{requ.education}", nullable = true)
 	private String education;
 
 	/** The experience. */
-	@NotNull
-	@ValidInput(expectedValue = BulkConstant.VALID_EXPER, message = "{requ.experience}")
+	// @NotNull
+	@ValidInput(expectedValue = BulkConstant.VALID_EXPER, message = "{requ.experience}", nullable = true)
 	private String experience;
 
 	/** The currency. */
-	@NotNull
-	@ValidInput(expectedValue = BulkConstant.VALID_CURRENCY, message = "{msg.currency}")
+	// @NotNull
+	@ValidInput(expectedValue = BulkConstant.VALID_CURRENCY, message = "{msg.currency}", nullable = true)
 	private String currency;
 
 	/** The pay basis. */
@@ -88,14 +91,11 @@ public class RequistionVo {
 	private String payBasis;
 
 	/** The min salary. */
-	@NotNull
-	@NumberFormat
-
+	@NotNullNumberFormat(nullable = true)
 	private long minSalary;
 
 	/** The max salary. */
-	@NotNull
-	@NumberFormat
+	@NotNullNumberFormat(nullable = true)
 	private long maxSalary;
 
 	/** The desc external. */
@@ -161,7 +161,7 @@ public class RequistionVo {
 	 *
 	 * @return the position code
 	 */
-	public long getPositionCode() {
+	public String getPositionCode() {
 		return positionCode;
 	}
 
@@ -171,7 +171,7 @@ public class RequistionVo {
 	 * @param positionCode
 	 *            the new position code
 	 */
-	public void setPositionCode(long positionCode) {
+	public void setPositionCode(String positionCode) {
 		this.positionCode = positionCode;
 	}
 

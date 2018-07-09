@@ -1,7 +1,8 @@
 package com.wipro.piramal.vo;
 
-import org.springframework.format.annotation.NumberFormat;
+import javax.validation.constraints.NotNull;
 
+import com.wipro.piramal.validator.NotNullNumberFormat;
 import com.wipro.piramal.validator.ValidInput;
 
 /**
@@ -10,23 +11,30 @@ import com.wipro.piramal.validator.ValidInput;
 public class ShlVo {
 
 	/** The identifier. */
-	@NumberFormat
+	@NotNullNumberFormat(nullable =true)
 	private long identifier;
 
 	/** The req. */
+	@NotNull
 	private String req;
 
 	/** The pid. */
+	@NotNull
+	@ValidInput(expectedValue = "shl" , message = "{shl.pid}")
 	private String pid;
 
 	/** The key. */
+	@NotNull
+	@ValidInput(expectedValue = "AssessmentId" , message = "{shl.key}")
 	private String key;
 
 	/** The value. */
+	@NotNull
+	@ValidInput(expectedValue = "66619CD1-71CE-495C-8829-3DE5DEB56168,37ADDAAC-3684-4C1F-97F7-170DD76074B2" , message = "{shl.value}")
 	private String value;
 
 	/** The override. */
-	@ValidInput(expectedValue = "FALSE,TRUE", message = "Invalid Value, Expected Values are [TRUE , FALSE ]")
+	@ValidInput(expectedValue = "FALSE,TRUE", message = "{shl.override}" ,nullable =true)
 	private String override;
 
 	/**

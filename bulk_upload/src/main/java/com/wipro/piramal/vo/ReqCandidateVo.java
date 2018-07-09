@@ -4,18 +4,19 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.NumberFormat;
 
+import com.wipro.piramal.validator.NotNullNumberFormat;
+
 /**
  * @author Praveen $oni 
  */
 public class ReqCandidateVo {
 
 	/** The identifier. */
-	@NumberFormat
+	@NotNullNumberFormat(nullable = true)
 	private long identifier;
 
 	/** The number. */
-	@NotNull
-	@NumberFormat
+	@NotNullNumberFormat
 	private long number;
 
 	/** The contest number. */

@@ -33,11 +33,12 @@ public class InputValidator implements ConstraintValidator<ValidInput, String> {
 	 */
 	@Override
 	public boolean isValid(String input, ConstraintValidatorContext arg1) {
-		System.out.println("  input  : " + input);
+		System.out.println("  input<>>>>>  : " + input);
 
-		if (!nullable) {
+		if (null == input && nullable) {
+			return true;
+		} else if (!nullable || null != input && nullable) {
 			for (String value : expectedValues.split(",")) {
-				System.out.println(">>> value <<<<" + value);
 				if (input.equals(value)) {
 					return true;
 				}

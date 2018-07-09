@@ -1,5 +1,6 @@
 package com.wipro.piramal.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -64,7 +65,8 @@ public class BulkUploadController {
 	 * @return the string
 	 */
 	@GetMapping("/")
-	public String index() {
+	public String index(HttpServletRequest request) {
+		request.getSession().invalidate();
 		return "login";
 	}
 
@@ -80,8 +82,7 @@ public class BulkUploadController {
 	@PostMapping("/bulk/login")
 	public String login(HttpServletRequest request, Model model) {
 		emailId = request.getParameter("email");
-
-		model.addAttribute("emailId", emailId);
+		request.getSession().setAttribute("loginStatus", true);
 		return "bulkUpload";
 	}
 
@@ -137,15 +138,7 @@ public class BulkUploadController {
 			}
 			if (processData.size() == 0) {
 
-				/*
-				 * File savedFile = service.moveFileToServer(fileType, new
-				 * InputStreamReader(file.getInputStream())); if (null !=
-				 * savedFile) { boolean mailStatus = service.sendMail(savedFile,
-				 * response); // ra.addFlashAttribute("mailStaus", "File Sent //
-				 * Sucessfully");
-				 * 
-				 * }
-				 */
+				File savedFile = service.moveFileToServer(fileType, new InputStreamReader(file.getInputStream()));
 				return "redirect:/bulk/uploadSuccess";
 
 			} else {
@@ -228,7 +221,7 @@ public class BulkUploadController {
 	 */
 	@GetMapping("/error")
 	public String errorPage(Model model) {
-		model.addAttribute("errorMessage", "Something went wrong, Please try again !");
+		model.addAttribute("errorMessage", "Something went wrong, Please try again !\n* Url doesn't exist");
 		return "errorPage";
 	}
 

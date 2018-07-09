@@ -2,17 +2,19 @@ package com.wipro.piramal.vo;
 
 import org.springframework.format.annotation.NumberFormat;
 
+import com.wipro.piramal.validator.NotNullNumberFormat;
+
 /**
  * @author Praveen $oni 
  */
 public class CandidateBypassVo {
 
 	/** The identifier. */
-	@NumberFormat
+	@NotNullNumberFormat(nullable =true)
 	private long identifier;
 
 	/** The candidate number. */
-	@NumberFormat
+	@NotNullNumberFormat(nullable =true)
 	private long candidateNumber;
 
 	/** The requisition number. */

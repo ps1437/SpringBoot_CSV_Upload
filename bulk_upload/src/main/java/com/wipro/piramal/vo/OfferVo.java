@@ -1,5 +1,7 @@
 package com.wipro.piramal.vo;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.format.annotation.NumberFormat;
 
 import com.wipro.piramal.util.BulkConstant;
@@ -11,10 +13,12 @@ import com.wipro.piramal.validator.ValidInput;
 public class OfferVo {
 
 	/** The identifier. */
+	@NotNull
 	@NumberFormat
 	private long identifier;
 
 	/** The appl no. */
+	@NotNull
 	@NumberFormat
 	private long applNo;
 
@@ -132,8 +136,16 @@ public class OfferVo {
 	private String relocationDesc;
 
 	/** The letter used. */
-	/*@ValidInput(expectedValue = BulkConstant.VALID_LETTERS, message = "{offers.letters}")
-	private String letterUsed;*/
+	@ValidInput(expectedValue = BulkConstant.VALID_LETTERS, message = "{offers.letters}")
+	private String letterUsed;
+
+	public String getLetterUsed() {
+		return letterUsed;
+	}
+
+	public void setLetterUsed(String letterUsed) {
+		this.letterUsed = letterUsed;
+	}
 
 	/** The hra. */
 	@NumberFormat

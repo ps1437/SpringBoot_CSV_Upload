@@ -10,7 +10,6 @@
 <link rel="icon" href="/images/bulk.png" type='image/png'>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
 <link href="${pageContext.request.contextPath}/css/style.css"
 	rel="stylesheet" type="text/css">
 </head>
@@ -83,7 +82,7 @@
 <body onload="noBack();">
 
 	<%@ include file="bulkHeader.jsp"%>
-	<div class="container">
+	<div class="container" style="padding: 0px">
 		<div class="row">
 			<form method="POST" action="/bulk/upload"
 				enctype="multipart/form-data">
@@ -154,23 +153,24 @@
 			</form>
 
 
-			<div class="col-sm-6">
+			<div class="col-sm-5" style="padding-left: 2px; padding-right: 2px">
 
 				<c:if test="${not empty fileStatus}">
 
 					<center class='alert alert-info'>${fileStatus}</center>
 				</c:if>
 				<c:if test="${not empty errorList}">
+        
 					<div class="panel panel-default ">
 
-
+                          <h6 style="text-decoration: underline;text-align:center"><b>Something went wrong with CSV data</b></h6>
 						<div class="table-responsive panel-body  scrollbar">
 
 							<table class="table table-bordered text-center">
 								<thead>
 									<tr>
-										<th class='text-center'>Entered Value</th>
-										<th class='text-center'>Reason</th>
+										<th class='text-center'>Input Value</th>
+										<th class='text-center'>Error Reason</th>
 									</tr>
 								</thead>
 
@@ -193,7 +193,7 @@
 
 
 
-			<div class="col-sm-3 text-center">
+			<div class="col-sm-4 text-center">
 				<%@ include file="bulkTemplate.jsp"%>
 			</div>
 		</div>

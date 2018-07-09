@@ -15,7 +15,9 @@ public class NumberValidator implements ConstraintValidator<NotNullNumberFormat,
 	@Override
 	public boolean isValid(Long value, ConstraintValidatorContext context) {
 
-		if (!nullable) {
+		if (nullable && null == value) {
+			return true;
+		} else if (!nullable || null != value && nullable) {
 			return isNumeric(String.valueOf(value));
 		}
 

@@ -22,7 +22,7 @@ public class MapperConstant {
 			"startDate", "fixedPay", "loyalaity", "currency", "basic", "petrolAllowance", "carAllowance",
 			"joiningBonus", "lta", "expirationDate", "medical", "statutoryBonus", "specialAllowance", "ctc",
 			"tribalAreaAllowance", "driverSalary", "performancePay", "eduAllowance", "pglBonus", "healthCoverage",
-			"conveyance", "gratuity", "pf", "carParkingAndCleaning","relocationDesc", "hra",
+			"conveyance", "gratuity", "pf", "carParkingAndCleaning","letterUsed","relocationDesc", "hra",
 			"hiringManagerTitle", "comments" };
 
 	public final static String[] CANDIDATE_BYPASS_COLUMNS = { "identifier", "candidateNumber", "requisitionNumber",
@@ -35,7 +35,7 @@ public class MapperConstant {
 			"rehire", "salary", "sal" };
 
 	public final static String[] CANDIDATE_EXP_COLUMNS = { "indent", "userName", "ds", "ce", "empName", "otherEmpName",
-			"jobFunction", "name", "otherJobTitle ", "industryType", "workContract", "description", "beginDate",
+			"jobFunction", "otherJobTitle ", "industryType", "workContract", "beginDate",
 			"endDate", "responsibility" };
 
 	public final static String[] CANDIDATE_EDU_COLUMNS ={};

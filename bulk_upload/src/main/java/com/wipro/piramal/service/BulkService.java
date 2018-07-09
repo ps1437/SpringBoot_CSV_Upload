@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -27,12 +29,6 @@ import com.wipro.piramal.exceptions.ErrorResponse;
 import com.wipro.piramal.util.BulkConstant;
 import com.wipro.piramal.util.MapperConstant;
 import com.wipro.piramal.validator.BulkValidator;
-import com.wipro.piramal.vo.CandidateBypassVo;
-import com.wipro.piramal.vo.CandidateVo;
-import com.wipro.piramal.vo.OfferVo;
-import com.wipro.piramal.vo.ReqCandidateVo;
-import com.wipro.piramal.vo.RequistionVo;
-import com.wipro.piramal.vo.ShlVo;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
@@ -57,6 +53,9 @@ public class BulkService {
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(BulkService.class);
 
+	
+	@Autowired
+	private SftpConnector connector;
 	/**
 	 * Download templates.
 	 *
@@ -98,16 +97,26 @@ public class BulkService {
 	 * @return the template name
 	 */
 	public static String getTemplateName(String name) {
+		
+		LOGGER.info(" BulkService.getTemplateName() : Template Name -" + name);
+		
 		String templateName = "";
 		switch (name) {
-		case "CANDIDATE":
-			templateName = BulkConstant.CANDIDATE_TEMPLATE;
-			break;
+
 		case "REQUISTION":
 			templateName = BulkConstant.REQUISTION_TEMPLATE;
 			break;
 		case "OFFERS":
 			templateName = BulkConstant.OFFERS_TEMPLATE;
+			break;
+		case "CANDIDATE":
+			templateName = BulkConstant.CANDIDATE_TEMPLATE;
+			break;
+		case "CANDIDATE_EXP":
+			templateName = BulkConstant.CANDIDATE_EXP_TEMPLATE;
+			break;
+		case "CANDIDATE_EDU":
+			templateName = BulkConstant.CANDIDATE_EDU_TEMPLATE;
 			break;
 		case "CAND_BYPASS":
 			templateName = BulkConstant.CANDIDATE_BYPASS_TEMPLATE;
@@ -117,6 +126,7 @@ public class BulkService {
 			break;
 		case "SHL":
 			templateName = BulkConstant.SHL_TEMPLATE;
+			break;
 
 		}
 		return templateName;
@@ -188,34 +198,9 @@ public class BulkService {
 			break;
 
 		}
-		/*
-		 * if ("R".equalsIgnoreCase(fileType)) {
-		 * 
-		 * } else if ("C".equalsIgnoreCase(fileType)) { CsvToBean<CandidateVo>
-		 * csv = new CsvToBean<CandidateVo>(); list =
-		 * csv.parse(setColumMapping(MapperConstant.CANDIDATE_CLASS,
-		 * MapperConstant.CANDIDATE_COLUMNS), reader); } else if
-		 * ("O".equalsIgnoreCase(fileType)) { CsvToBean<OfferVo> csv = new
-		 * CsvToBean<OfferVo>();
-		 * 
-		 * 
-		 * } else if ("RC".equalsIgnoreCase(fileType)) {
-		 * CsvToBean<ReqCandidateVo> csv = new CsvToBean<ReqCandidateVo>();
-		 * 
-		 * 
-		 * } else if ("CB".equalsIgnoreCase(fileType)) {
-		 * CsvToBean<CandidateBypassVo> csv = new
-		 * CsvToBean<CandidateBypassVo>();
-		 * 
-		 * 
-		 * } else if ("S".equalsIgnoreCase(fileType)) { CsvToBean<ShlVo> csv =
-		 * new CsvToBean<ShlVo>();
-		 * 
-		 * 
-		 * }
-		 */
-
+	
 		System.out.println("list: " + list);
+		LOGGER.info(" BulkService.processData() : no of rows in CSV  -" + list.size());
 		if (list.size() != 0) {
 			validate = validator.validate(list);
 		}
@@ -227,6 +212,8 @@ public class BulkService {
 		File file = null;
 		try {
 			String fileName = getOutPutFileName(fileType);
+			
+	
 			System.out.println("outPutPath " + outPutPath);
 			file = new File(outPutPath + "\\" + fileName);
 			FileOutputStream out = new FileOutputStream(file);
@@ -266,6 +253,12 @@ public class BulkService {
 			fileName = BulkConstant.SHL_OP_FILE;
 
 		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+
+		String currentTime = sdf.format(new Date());
+		fileName = fileName.concat(currentTime);
+
 		return fileName;
 	}
 
